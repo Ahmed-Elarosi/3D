@@ -18,6 +18,7 @@ const renderer = new THREE.WebGLRenderer({
 renderer.setPixelRatio(window.devicePixelRatio);
 renderer.setSize(window.innerWidth, window.innerHeight);
 camera.position.setZ(30);
+camera.position.setX(-3);
 
 renderer.render(scene, camera);
 
@@ -30,10 +31,10 @@ const torus = new THREE.Mesh(geometry, material);
 
 scene.add(torus);
 
-const pointLight = new THREE.PointLight(0x7171da, 1, 100);
-pointLight.position.set(10, 10, 10);
+const pointLight = new THREE.PointLight(0xffffff);
+pointLight.position.set(5, 5, 5);
 
-const ambientLight = new THREE.AmbientLight(0x7171da, 1, 100);
+const ambientLight = new THREE.AmbientLight(0xffffff);
 scene.add(pointLight, ambientLight);
 
 const pointLightHelper = new THREE.PointLightHelper(pointLight);
@@ -46,7 +47,7 @@ const controls = new OrbitControls(camera, renderer.domElement);
 
 function addStar() {
   const geometry = new THREE.SphereGeometry(0.25, 24, 24);
-  const material = new THREE.MeshStandardMaterial({ color: 0xffffff });
+  const material = new THREE.MeshStandardMaterial({ color: 0xffff00 });
   const star = new THREE.Mesh(geometry, material);
 
   const [x, y, z] = Array(3)
@@ -61,6 +62,45 @@ Array(200).fill().forEach(addStar);
 
 const texture = new THREE.TextureLoader().load("images/bg-space.jpg");
 scene.background = texture;
+
+const boxTexture = new THREE.TextureLoader().load("images/a.h.jpg");
+const ahmed = new THREE.Mesh(
+  new THREE.BoxGeometry(3, 3, 3),
+  new THREE.MeshBasicMaterial({ map: boxTexture })
+);
+
+scene.add(ahmed);
+
+const moonTexture = new THREE.TextureLoader().load("images/moon.jpg");
+const mooonTxture = new THREE.TextureLoader().load("images/normal.jpg");
+const moon = new THREE.Mesh(
+  new THREE.SphereGeometry(3, 32, 32),
+  new THREE.MeshStandardMaterial({ map: moonTexture, normalMap: mooonTxture })
+);
+scene.add(moon);
+
+moon.position.z = 30;
+moon.position.setX(-10);
+
+ahmed.position.z = -5;
+ahmed.position.x = 2;
+
+function moveCamera() {
+  const t = document.body.getBoundingClientRect().top;
+  moon.rotation.x += 0.05;
+  moon.rotation.y += 0.075;
+  moon.rotation.z += 0.05;
+
+  ahmed.rotation.y += 0.01;
+  ahmed.rotation.z += 0.01;
+
+  camera.position.z = t * -0.01;
+  camera.position.x = t * -0.0002;
+  camera.rotation.y = t * -0.0002;
+}
+
+document.body.onscroll = moveCamera;
+moveCamera();
 
 function animate() {
   requestAnimationFrame(animate);

@@ -1,1 +1,3 @@
-# 3D Three JS
+# 3D Website using Three JS
+
+### Inspired by "Fireship"
